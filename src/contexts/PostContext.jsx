@@ -1,4 +1,4 @@
-import { createContext, useState } from "react";
+import { createContext, useContext, useState } from "react";
 import { faker } from "@faker-js/faker";
 
 function createRandomPost() {
@@ -8,8 +8,7 @@ function createRandomPost() {
   };
 }
 
-// eslint-disable-next-line
-export const PostContext = createContext();
+const PostContext = createContext();
 
 export function PostProvider({ children }) {
   const [posts, setPosts] = useState(() =>
@@ -49,4 +48,16 @@ export function PostProvider({ children }) {
       {children}
     </PostContext.Provider>
   );
+}
+
+// eslint-disable-next-line
+export function usePosts() {
+  const context = useContext(PostContext);
+
+  // Safety check: prevent usage outside the provider
+  if (context === undefined) {
+    throw new Error("usePosts must be used inside a PostProvider");
+  }
+
+  return context;
 }
